@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.YuangongDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.entity.YuangongEntity" id="yuangongMap">
+        <result property="yuangonggonghao" column="yuangonggonghao"/>
+        <result property="mima" column="mima"/>
+        <result property="yuangongxingming" column="yuangongxingming"/>
+        <result property="xingbie" column="xingbie"/>
+        <result property="bumen" column="bumen"/>
+        <result property="zhiwu" column="zhiwu"/>
+        <result property="dianhua" column="dianhua"/>
+        <result property="touxiang" column="touxiang"/>
+    </resultMap>
+
+	<select id="selectListVO"
+		resultType="com.entity.vo.YuangongVO" >
+		SELECT * FROM yuangong  yuangong         
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectVO"
+		resultType="com.entity.vo.YuangongVO" >
+		SELECT  yuangong.* FROM yuangong  yuangong
+ 		<where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+
+    <select id="selectListView"
+		resultType="com.entity.view.YuangongView" >
+
+		SELECT  yuangong.* FROM yuangong  yuangong 	        
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectView"
+		resultType="com.entity.view.YuangongView" >
+		SELECT * FROM yuangong  yuangong <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+
+    <select id="selectValue" resultType="map" >
+        SELECT ${params.xColumn}, sum(${params.yColumn}) total FROM yuangong
+        <where> 1=1 ${ew.sqlSegment}</where>
+        group by ${params.xColumn}
+    </select>
+
+    <select id="selectTimeStatValue" resultType="map" >
+        <if test = 'params.timeStatType == "日"'>
+                SELECT DATE_FORMAT(${params.xColumn},'%Y-%m-%d') ${params.xColumn}, sum(${params.yColumn}) total FROM yuangong
+                <where> 1=1 ${ew.sqlSegment}</where>
+                group by DATE_FORMAT(${params.xColumn},'%Y-%m-%d')
+        </if>
+        <if test = 'params.timeStatType == "月"'>
+                SELECT DATE_FORMAT(${params.xColumn},'%Y-%m') ${params.xColumn}, sum(${params.yColumn}) total FROM yuangong
+                <where> 1=1 ${ew.sqlSegment}</where>
+                group by DATE_FORMAT(${params.xColumn},'%Y-%m')
+        </if>
+        <if test = 'params.timeStatType == "年"'>
+                SELECT DATE_FORMAT(${params.xColumn},'%Y') ${params.xColumn}, sum(${params.yColumn}) total FROM yuangong
+                <where> 1=1 ${ew.sqlSegment}</where>
+                group by DATE_FORMAT(${params.xColumn},'%Y')
+        </if>
+    </select>
+   
+    <select id="selectGroup" resultType="map" >
+        SELECT ${params.column} , count(1) total FROM yuangong  
+        <where> 1=1 ${ew.sqlSegment}</where>
+        group by ${params.column}
+    </select>
+
+
+    <select id="bumenxingbieTypeStat" resultType="map" >
+        select 
+        bumen,
+        sum(case when xingbie in ('男') then 1 else 0 end) as 男,        sum(case when xingbie in ('女') then 1 else 0 end) as 女        from yuangong
+        <where> 1=1 ${ew.sqlSegment}</where>
+        group by bumen
+    </select>
+
+
+	
+</mapper>
